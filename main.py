@@ -15,6 +15,7 @@ from routes.auth import router as auth_router
 sentry_sdk.init(
     dsn=os.environ.get("SENTRY_DSN", ""),
     send_default_pii=True,
+    environment=os.environ.get("ENVIRONMENT", "development")
 )
 
 app = FastAPI()
