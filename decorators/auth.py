@@ -52,6 +52,7 @@ def require_auth(func=None, *, permissions=[], require_admin=False):
             
 
             request.state.user = user
+            request.state.token = auth_token
 
             return await fn(*args, **kwargs)
         return wrapper

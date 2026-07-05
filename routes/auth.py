@@ -42,3 +42,10 @@ async def me(request: Request) -> JSONResponse:
     user = SafeUser.model_validate(request.state.user)
     
     return JSONResponse({"success": True, "user": user.model_dump(mode="json")})
+
+@router.post("/v1/auth/logout")
+async def logout(request: Request) -> JSONResponse:
+
+    session_tools.revoke_session(request.state.token)
+
+    return JSONResponse({"success": True, "message": "Logged out and session revoked!"})
