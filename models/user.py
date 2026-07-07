@@ -7,7 +7,7 @@ import uuid
 
 class SafeUser(BaseModel):
 
-    model_config = ConfigDict(extra="ignore")
+    model_config = ConfigDict(extra="ignore", revalidate_instances="always")
                               
     id: uuid.UUID =  Field(default_factory=uuid.uuid4)
     name: str
