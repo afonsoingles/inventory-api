@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, SecretStr, AwareDatetime, Field, PlainSerializer, ConfigDict
+from pydantic import BaseModel, EmailStr, SecretStr, AwareDatetime, Field, PlainSerializer, ConfigDict, field_serializer
 from typing_extensions import Annotated
 
 from typing import Optional
@@ -21,5 +21,9 @@ class SafeUser(BaseModel):
 
 class User(SafeUser):
     password: SecretStr
+
+    @field_serializer("password")
+    def serialize_password(self, value: SecretStr) -> str:
+        return value.get_secret_value()
 
 

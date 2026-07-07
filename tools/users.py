@@ -77,39 +77,8 @@ class UserTools:
         
         user = User.model_validate(raw)
 
-        self.db.redis.set(f"users.user:{user.id}", user.model_dump_json(), ex=10800)
-        self.db.redis.set(f"users.lookup.email:{email}", user.id, ex=10800)
+        self.db.redis.set(f"users.user:{str(user.id)}", user.model_dump_json(), ex=10800)
+        self.db.redis.set(f"users.lookup.email:{email}", str(user.id), ex=10800)
 
       
         return user
-
-
-
-
-
-
-
-
-
-    def update_user(self, id, data):
-        user = self._get_user_model(id)
-
-        if user is None:
-            return "not_found"
-        
-        user_dict = user.model_dump()
-        for key in data:
-            if key not in ["suspended", "permissions", "admin", "superadmin", "password", "email", "created_at", "updated_at", "id"]:
-                user_dict[key] = data[key]
-            else:
-                return "protected_field"
-        
-        user_dict["updated_at"] = datetime.datetime.now(datetime.timezone.utc)
-
-        user = User.model_validate(user_dict)
-        updated_dict = user.model_dump()
-
-        self.db.mongo.users.update_one({"id": id}, {"$set": updated_dict})
-        self.db.redis.set(f"users.user:{id}", user.model_dump_json(), ex=10800)
-        self.db.redis.set(f"users.lookup.email:{user.email}", id, ex=10800)
-        return "user_updated"

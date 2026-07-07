@@ -20,9 +20,9 @@ async def authenticate(request: Request) -> JSONResponse:
 
     user = user_tools.get_user_by_email(email)
 
-    user_pwd = user.password.get_secret_value()
+    stored_pwd = user.password.get_secret_value()
     
-    check = user_tools.verify_password_hash(password, user_pwd)
+    check = user_tools.verify_password_hash(password, stored_pwd)
 
     if not check:
         raise UserPasswordIncorrectError
