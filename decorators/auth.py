@@ -48,6 +48,12 @@ def require_auth(func: Callable[P, Awaitable[R]] | None = None, *, permissions: 
                 raise UserSuspendedError
             if not user.admin and require_admin:
                 raise UnsufficientPermissionsError
+            
+            for permission in permissions:
+                if user.admin or user.superadmin:
+                    continue
+                if permission not in user.permissions:
+                    raise UnsufficientPermissionsError
 
             if request is not None:
                 request.state.user = user
