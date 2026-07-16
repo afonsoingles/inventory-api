@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from errors.base import BaseError
 
 from routes.auth import router as auth_router
+from routes.parts import router as parts_router
 
 sentry_sdk.init(
     dsn=os.environ.get("SENTRY_DSN", ""),
@@ -31,6 +32,7 @@ app.add_middleware(
 
 
 app.include_router(auth_router)
+app.include_router(parts_router)
 
 @app.exception_handler(BaseError)
 async def handle_errors(request, err: BaseError) -> JSONResponse:
